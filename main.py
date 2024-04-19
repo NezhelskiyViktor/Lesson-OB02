@@ -23,36 +23,69 @@ import uuid
 
 class User:
 
-    def __init__(self, name, age):
+    def __init__(self, name, access_level, db):
         self.__name = name
-        self.__age = age
-        self._access_level = 0
-        self._id = uuid.uuid4()
+        self.__access_level = access_level
+        self.__id = uuid.uuid4()
+        db.append(self)
+        print(f'Пользователь {name} добавлен')
 
     def get_name(self):
         return self.__name
 
-    def get_age(self):
-        return self.__age
-
-    def set_al(self, access_level):
-        if access_level == 'admin':
-            self._access_level = 1
-        elif access_level == 'user':
-            self._access_level = 0
-        else:
-            print('Неизвестый уровень добтупа. Допустимые аргументы метода:  admin, user')
-
     def print_name(self):
-        print(f'Меня зовут {self.get_name()}. Мне {self.get_age()} лет.')
+        print(f"""ID: {self.__id} : 
+        Имя: {self.get_name()}. Уровень доступа: {self.__access_level}""")
 
 
 class Admin(User):
 
-    def __init__(self, name, age):
-        super().__init__(name, age)
-        self._access_level = 1
-        self._id = uuid.uuid4()
+    def __init__(self, name, access_level, db):
+        super().__init__(name, access_level, db)
+        self.__id = uuid.uuid4()
+        self.__users = None
 
-    def add_user(self, name, age):
-        pass
+    def add_user(self, name, access_level, db):
+        self.__users = User(name, access_level, db)
+        return self.__users
+
+    def remove_user(self, name, db):
+        for __user in db:
+            if __user.get_name() == name:
+                db.remove(__user)
+                print(f' --- Сотрудник {name} уволен --- ')
+
+    def set_al(self, name, access_level, db):
+        for __user in db:
+            if __user.get_name() == name:
+                if access_level == 'admin' or access_level == 'user':
+                    self.__access_level = access_level
+                    print(f'Уровень доступа пользователя {name} изменен на {access_level}')
+                else:
+                    print('Неизвестый уровень доступа. Допустимые аргументы метода:  admin, user')
+
+
+database = []  # База данных сотрудников
+
+# Создаем первого администратора
+first_user = Admin('Иван Петрович Сидоров', 'admin', database)
+
+# создаем обычных сотрудников
+first_user.add_user('Петр Сидорович Иванов', 'user', database)
+first_user.add_user('Виктор Андреевич Сидоров', 'user', database)
+first_user.add_user('Сергей Петрович Иванов', 'user', database)
+
+print('\nСписок пользователей:')
+for user in database:
+    user.print_name()
+
+# удаляем двух сотрудников
+first_user.remove_user('Петр Сидорович Иванов', database)
+first_user.remove_user('Сергей Петрович Иванов', database)
+
+print('\nСписок пользователей:')
+for user in database:
+    user.print_name()
+
+# изменяем уровень доступа сотруднику
+first_user.set_al('Виктор Андреевич Сидоров', 'admin', database)
