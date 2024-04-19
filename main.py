@@ -30,7 +30,7 @@ class User:
         db.append(self)
         print(f'Пользователь {name} добавлен')
 
-    def get_name(self):
+    def _get_name(self):
         return self.__name
 
     def get_access_level(self):
@@ -41,7 +41,7 @@ class User:
 
     def print_name(self):
         print(f"""ID: {self.__id} : 
-        Имя: {self.get_name()}. Уровень доступа: {self.__access_level}""")
+        Имя: {self._get_name()}. Уровень доступа: {self.__access_level}""")
 
 
 class Admin(User):
@@ -57,24 +57,24 @@ class Admin(User):
 
     def remove_user(self, name, db):
         for __user in db:
-            if __user.get_name() == name:
+            if __user._get_name() == name:
                 db.remove(__user)
-                print(f' --- {self.get_name()} уволил сотрудника {name} --- ')
+                print(f' --- {self._get_name()} уволил сотрудника {__user._get_name()} --- ')
 
     def set_al(self, name, access_level, db):
         for __user in db:
-            if __user.get_name() == name:
+            if __user._get_name() == name:
                 if access_level == 'admin' or access_level == 'user':
                     __user.set_access_level(access_level)
                     print(f'\
-{self.get_name()} изменил уровень доступа {__user.get_name()}\
+{self._get_name()} изменил уровень доступа {__user._get_name()}\
  на {__user.get_access_level()}')
                 else:
                     print('!  Неизвестый уровень доступа. Допустимые аргументы метода:  admin, user !!!')
 
     def get_user(self, name, db):
         for __user in db:
-            if __user.get_name() == name:
+            if __user._get_name() == name:
                 return __user
         return None
 
@@ -118,6 +118,3 @@ if new_admin:
     new_admin.print_name()
 else:
     print('--- Сотрудник не найден ---')
-
-
-
