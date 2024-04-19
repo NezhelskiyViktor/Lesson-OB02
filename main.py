@@ -18,3 +18,41 @@
 модификации снаружи. Предоставь доступ к необходимым атрибутам через методы
 (например, get и set методы).
 """
+import uuid
+
+
+class User:
+
+    def __init__(self, name, age):
+        self.__name = name
+        self.__age = age
+        self._access_level = 0
+        self._id = uuid.uuid4()
+
+    def get_name(self):
+        return self.__name
+
+    def get_age(self):
+        return self.__age
+
+    def set_al(self, access_level):
+        if access_level == 'admin':
+            self._access_level = 1
+        elif access_level == 'user':
+            self._access_level = 0
+        else:
+            print('Неизвестый уровень добтупа. Допустимые аргументы метода:  admin, user')
+
+    def print_name(self):
+        print(f'Меня зовут {self.get_name()}. Мне {self.get_age()} лет.')
+
+
+class Admin(User):
+
+    def __init__(self, name, age):
+        super().__init__(name, age)
+        self._access_level = 1
+        self._id = uuid.uuid4()
+
+    def add_user(self, name, age):
+        pass
