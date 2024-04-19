@@ -76,7 +76,7 @@ class Admin(User):
         for __user in db:
             if __user.get_name() == name:
                 return __user
-        return self
+        return None
 
 
 database = []  # База данных сотрудников
@@ -105,8 +105,19 @@ for user in database:
 first_user.set_al('Виктор Андреевич Сидоров', 'Админ', database)
 first_user.set_al('Виктор Андреевич Сидоров', 'admin', database)
 
+# получаем сотрудника который есть в базе
 new_admin = first_user.get_user('Виктор Андреевич Сидоров', database)
-new_admin.print_name()
+if new_admin:
+    new_admin.print_name()
+else:
+    print('--- Сотрудник не найден ---')
+
+# получаем сотрудника, которого нет в базе
+new_admin = first_user.get_user('Cергей Андреевич Сидоров', database)
+if new_admin:
+    new_admin.print_name()
+else:
+    print('--- Сотрудник не найден ---')
 
 
 
