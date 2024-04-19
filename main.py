@@ -33,6 +33,12 @@ class User:
     def get_name(self):
         return self.__name
 
+    def get_access_level(self):
+        return self.__access_level
+
+    def set_access_level(self, access_level):
+        self.__access_level = access_level
+
     def print_name(self):
         print(f"""ID: {self.__id} : 
         Имя: {self.get_name()}. Уровень доступа: {self.__access_level}""")
@@ -53,16 +59,24 @@ class Admin(User):
         for __user in db:
             if __user.get_name() == name:
                 db.remove(__user)
-                print(f' --- Сотрудник {name} уволен --- ')
+                print(f' --- {self.get_name()} уволил сотрудника {name} --- ')
 
     def set_al(self, name, access_level, db):
         for __user in db:
             if __user.get_name() == name:
                 if access_level == 'admin' or access_level == 'user':
-                    self.__access_level = access_level
-                    print(f'Уровень доступа пользователя {name} изменен на {access_level}')
+                    __user.set_access_level(access_level)
+                    print(f'\
+{self.get_name()} изменил уровень доступа {__user.get_name()}\
+ на {__user.get_access_level()}')
                 else:
-                    print('Неизвестый уровень доступа. Допустимые аргументы метода:  admin, user')
+                    print('!  Неизвестый уровень доступа. Допустимые аргументы метода:  admin, user !!!')
+
+    def get_user(self, name, db):
+        for __user in db:
+            if __user.get_name() == name:
+                return __user
+        return self
 
 
 database = []  # База данных сотрудников
@@ -88,4 +102,11 @@ for user in database:
     user.print_name()
 
 # изменяем уровень доступа сотруднику
+first_user.set_al('Виктор Андреевич Сидоров', 'Админ', database)
 first_user.set_al('Виктор Андреевич Сидоров', 'admin', database)
+
+new_admin = first_user.get_user('Виктор Андреевич Сидоров', database)
+new_admin.print_name()
+
+
+
