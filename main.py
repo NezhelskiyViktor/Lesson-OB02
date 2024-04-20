@@ -23,12 +23,11 @@ import uuid
 
 class User:
 
-    def __init__(self, name, access_level, db):
+    def __init__(self, name, access_level):
         self.__name = name
         self.__access_level = access_level
         self.__id = uuid.uuid4()
-        db.append(self)
-        print(f'Пользователь {name} добавлен')
+        self.__office = None
 
     def _get_name(self):
         return self.__name
@@ -39,82 +38,93 @@ class User:
     def set_access_level(self, access_level):
         self.__access_level = access_level
 
-    def print_name(self):
-        print(f"""ID: {self.__id} : 
+    def get_office(self):
+        return self.__office
+
+    def set_office(self, office):
+        self.__office = office
+
+    def print_user(self):
+        print(f"""ID: {self.__id} : Компания: {self.__office}
         Имя: {self._get_name()}. Уровень доступа: {self.__access_level}""")
 
 
 class Admin(User):
 
-    def __init__(self, name, access_level, db):
-        super().__init__(name, access_level, db)
+    def __init__(self, name, access_level, office):
+        super().__init__(name, access_level)
         self.__id = uuid.uuid4()
-        self.__users = None
+        self.__office = office
+        self.users = []
+        self.users.append(self)
+        self.users[0].set_office(office)
 
-    def add_user(self, name, access_level, db):
-        self.__users = User(name, access_level, db)
-        return self.__users
+    def add_user(self, name, access_level):
+        self.users.append(User(name, access_level))
+        self.users[-1].set_office(self.__office)
+        print(f' --- {self._get_name()} принял сотрудника {self.users[-1]._get_name()} \
+в компению {self.__office} --- ')
 
-    def remove_user(self, name, db):
-        for __user in db:
+    def remove_user(self, name):
+        for __user in self.users:
             if __user._get_name() == name:
-                db.remove(__user)
-                print(f' --- {self._get_name()} уволил сотрудника {__user._get_name()} --- ')
+                self.users.remove(__user)
+                print(f' --- {self._get_name()} уволил сотрудника {__user._get_name()} \
+из компании {self.__office} --- ')
 
-    def set_al(self, name, access_level, db):
-        for __user in db:
+    def set_user_access_level(self, name, access_level):
+        for __user in self.users:
             if __user._get_name() == name:
                 if access_level == 'admin' or access_level == 'user':
                     __user.set_access_level(access_level)
-                    print(f'\
-{self._get_name()} изменил уровень доступа {__user._get_name()}\
- на {__user.get_access_level()}')
+                    print(f'{self._get_name()} изменил уровень доступа \
+{__user._get_name()} на {__user.get_access_level()}')
                 else:
-                    print('!  Неизвестый уровень доступа. Допустимые аргументы метода:  admin, user !!!')
+                    print('!  Неизвестый уровень доступа. Допустимые аргументы метода:\
+admin, user !!!')
 
-    def get_user(self, name, db):
-        for __user in db:
+    def get_user(self, name):
+        for __user in self.users:
             if __user._get_name() == name:
                 return __user
         return None
 
 
-database = []  # База данных сотрудников
-
 # Создаем первого администратора
-first_user = Admin('Иван Петрович Сидоров', 'admin', database)
+first_user = Admin('Сидоров И.П.', 'admin', '"Hot Line"')
+first_user.print_user()
 
 # создаем обычных сотрудников
-first_user.add_user('Петр Сидорович Иванов', 'user', database)
-first_user.add_user('Виктор Андреевич Сидоров', 'user', database)
-first_user.add_user('Сергей Петрович Иванов', 'user', database)
+first_user.add_user('Иванов П.В', 'user')
+first_user.add_user('Петров С.С.', 'user')
+first_user.add_user('Сергеев В.Н.', 'user')
 
-print('\nСписок пользователей:')
-for user in database:
-    user.print_name()
+print('\nСписок сотрудников:')
+for user in first_user.users:
+    user.print_user()
 
 # удаляем двух сотрудников
-first_user.remove_user('Петр Сидорович Иванов', database)
-first_user.remove_user('Сергей Петрович Иванов', database)
+first_user.remove_user('Иванов П.В')
+first_user.remove_user('Сергеев В.Н.')
 
-print('\nСписок пользователей:')
-for user in database:
-    user.print_name()
+print('\nСписок сотрудников:')
+for user in first_user.users:
+    user.print_user()
 
 # изменяем уровень доступа сотруднику
-first_user.set_al('Виктор Андреевич Сидоров', 'Админ', database)
-first_user.set_al('Виктор Андреевич Сидоров', 'admin', database)
+first_user.set_user_access_level('Петров С.С.', 'Админ')  # С ошибкой
+first_user.set_user_access_level('Петров С.С.', 'admin')
 
 # получаем сотрудника который есть в базе
-new_admin = first_user.get_user('Виктор Андреевич Сидоров', database)
+new_admin = first_user.get_user('Петров С.С.')
 if new_admin:
-    new_admin.print_name()
+    new_admin.print_user()
 else:
     print('--- Сотрудник не найден ---')
 
 # получаем сотрудника, которого нет в базе
-new_admin = first_user.get_user('Cергей Андреевич Сидоров', database)
+new_admin = first_user.get_user('Иванов П.В')
 if new_admin:
-    new_admin.print_name()
+    new_admin.print_user()
 else:
     print('--- Сотрудник не найден ---')
