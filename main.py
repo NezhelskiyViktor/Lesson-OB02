@@ -44,9 +44,9 @@ class User:
     def set_office(self, office):
         self.__office = office
 
-    def print_user(self):
-        print(f"""ID: {self.__id} : Компания: {self.__office}
-        Имя: {self._get_name()}. Уровень доступа: {self.__access_level}""")
+    def __str__(self):
+        return f"ID: {self.__id} : Компания: {self.__office} \
+Имя: {self._get_name()}. Уровень доступа: {self.__access_level}"
 
 
 class Admin(User):
@@ -92,7 +92,7 @@ admin, user !!!')
 
 # Создаем первого администратора
 first_user = Admin('Сидоров И.П.', 'admin', '"Hot Line"')
-first_user.print_user()
+print(first_user)
 
 # создаем обычных сотрудников
 first_user.add_user('Иванов П.В', 'user')
@@ -101,7 +101,7 @@ first_user.add_user('Сергеев В.Н.', 'user')
 
 print('\nСписок сотрудников:')
 for user in first_user.users:
-    user.print_user()
+    print(user)
 
 # удаляем двух сотрудников
 first_user.remove_user('Иванов П.В')
@@ -109,7 +109,7 @@ first_user.remove_user('Сергеев В.Н.')
 
 print('\nСписок сотрудников:')
 for user in first_user.users:
-    user.print_user()
+    print(user)
 
 # изменяем уровень доступа сотруднику
 first_user.set_user_access_level('Петров С.С.', 'Админ')  # С ошибкой
@@ -118,13 +118,13 @@ first_user.set_user_access_level('Петров С.С.', 'admin')
 # получаем сотрудника который есть в базе
 new_admin = first_user.get_user('Петров С.С.')
 if new_admin:
-    new_admin.print_user()
+    print(new_admin)
 else:
     print('--- Сотрудник не найден ---')
 
 # получаем сотрудника, которого нет в базе
 new_admin = first_user.get_user('Иванов П.В')
 if new_admin:
-    new_admin.print_user()
+    print(new_admin)
 else:
     print('--- Сотрудник не найден ---')
