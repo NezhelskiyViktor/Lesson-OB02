@@ -90,41 +90,42 @@ admin, user !!!')
         return None
 
 
-# Создаем первого администратора
-first_user = Admin('Сидоров И.П.', 'admin', '"Hot Line"')
-print(first_user)
+if __name__ == '__main__':
+    # Создаем первого администратора
+    first_user = Admin('Сидоров И.П.', 'admin', '"Hot Line"')
+    print(first_user)
 
-# создаем обычных сотрудников
-first_user.add_user('Иванов П.В', 'user')
-first_user.add_user('Петров С.С.', 'user')
-first_user.add_user('Сергеев В.Н.', 'user')
+    # создаем обычных сотрудников
+    first_user.add_user('Иванов П.В', 'user')
+    first_user.add_user('Петров С.С.', 'user')
+    first_user.add_user('Сергеев В.Н.', 'user')
 
-print('\nСписок сотрудников:')
-for user in first_user.users:
-    print(user)
+    print('\nСписок сотрудников:')
+    for user in first_user.users:
+        print(user)
 
-# удаляем двух сотрудников
-first_user.remove_user('Иванов П.В')
-first_user.remove_user('Сергеев В.Н.')
+    # удаляем двух сотрудников
+    first_user.remove_user('Иванов П.В')
+    first_user.remove_user('Сергеев В.Н.')
 
-print('\nСписок сотрудников:')
-for user in first_user.users:
-    print(user)
+    print('\nСписок сотрудников:')
+    for user in first_user.users:
+        print(user)
 
-# изменяем уровень доступа сотруднику
-first_user.set_user_access_level('Петров С.С.', 'Админ')  # С ошибкой
-first_user.set_user_access_level('Петров С.С.', 'admin')
+    # изменяем уровень доступа сотруднику
+    first_user.set_user_access_level('Петров С.С.', 'Админ')  # С ошибкой
+    first_user.set_user_access_level('Петров С.С.', 'admin')
 
-# получаем сотрудника который есть в базе
-new_admin = first_user.get_user('Петров С.С.')
-if new_admin:
-    print(new_admin)
-else:
-    print('--- Сотрудник не найден ---')
+    # получаем сотрудника который есть в базе
+    new_admin = first_user.get_user('Петров С.С.')
+    if new_admin:
+        print(new_admin)
+    else:
+        print('--- Сотрудник не найден ---')
 
-# получаем сотрудника, которого нет в базе
-new_admin = first_user.get_user('Иванов П.В')
-if new_admin:
-    print(new_admin)
-else:
-    print('--- Сотрудник не найден ---')
+    # получаем сотрудника, которого нет в базе
+    new_admin = first_user.get_user('Иванов П.В')
+    if new_admin:
+        print(new_admin)
+    else:
+        print('--- Сотрудник не найден ---')
